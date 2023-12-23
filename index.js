@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -46,13 +46,34 @@ async function run() {
         
         // added tasek 
 
-        app.post("/announcement", async (req, res) => {
+        app.post("/tasks", async (req, res) => {
             const user = req.body;
             //   console.log(user);
-            const result = await AdminAnnouncementCollection.insertOne(user);
+            const result = await userCollectionTask.insertOne(user);
             console.log(result);
             res.send(result);
         });
+
+        // get task 
+
+        app.get("/tasks", async (req, res) => {
+            const result = await userCollectionTask.find().toArray();
+            res.send(result);
+        });
+
+        // delete task 
+     
+
+          app.delete("/tasks/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log("delete", id);
+            const query = {
+              _id: new ObjectId(id),
+            };
+            const result = await userCollectionTask.deleteOne(query);
+            console.log(result);
+            res.send(result);
+          });
 
 
 
